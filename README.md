@@ -1,5 +1,6 @@
 # abi-bot
 ![alt text](http://cs622017.vk.me/v622017797/19009/e_FAldTNkBc.jpg "Abi Bot")
+
 simple vk bot
 
 ## Getting started
