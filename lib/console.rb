@@ -26,4 +26,16 @@ class Console
     exit
   end
 
+  def stopped
+    puts 'Bot stopped.'.colorize(:red)
+  end
+
+  def task_running(name)
+    puts "Running task : #{name}".colorize(:yellow)
+  end
+
+  def tm_started
+    puts 'Task manager started.'.colorize(:blue)
+  end
+
 end
