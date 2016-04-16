@@ -24,6 +24,4 @@ class Methods
     response.body
   end
 
-  
-
 end
