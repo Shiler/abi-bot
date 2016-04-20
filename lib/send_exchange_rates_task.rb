@@ -1,10 +1,11 @@
 require './lib/methods.rb'
+require './lib/constants.rb'
 require 'date'
 
 class SendExchangeRatesTask
 
   def initialize(id, token, rates)
-    @exec_time = Time.new(2016, 04, 20, 6, 0, 0, "+03:00")
+    @exec_time = MorningTime
     @executed = false
     @methods = Methods.new
     @id = id

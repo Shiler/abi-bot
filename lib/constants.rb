@@ -1,3 +1,5 @@
+require 'date'
+
 RequestsPerSecond = 3
 
-Users = [95679514, 143937778]
+MorningTime = Time.new(2016, 04, 20, 6, 0, 0, "+03:00")
