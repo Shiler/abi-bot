@@ -16,11 +16,9 @@ class Methods
   def get_by_url(url)
     url = URI.encode(url)
     uri = URI.parse(url)
-    puts uri.request_uri
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     response = http.request(Net::HTTP::Get.new(uri.request_uri))
-    puts response.body
     response.body
   end
 
