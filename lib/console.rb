@@ -32,11 +32,15 @@ class Console
   end
 
   def task_running(name)
-    puts "Running task : #{name}".colorize(:yellow)
+    puts "Running task: #{name}".colorize(:yellow)
   end
 
   def tm_started
     puts 'Task manager started.'.colorize(:blue)
+  end
+
+  def added_task(name)
+    puts "Added task: #{name}".colorize(:green)
   end
 
 end

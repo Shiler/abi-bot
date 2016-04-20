@@ -2,20 +2,19 @@ require './lib/methods.rb'
 require './lib/constants.rb'
 require 'date'
 
-class SendWeatherTask
+class SendWelcomeTask
 
-  def initialize(id, token, weather)
+  def initialize(id, token)
     @exec_time = MorningTime
     @executed = false
     @methods = Methods.new
     @id = id
     @token = token
-    @weather = weather
   end
 
   def run
-    message = "Сегодня с утра погода дерьмо: #{@weather[3].gsub('Погода: ', '')} :(\n"
-    message += "❄ #{@weather[0]}\n⚡ #{@weather[1]}\n💨 #{@weather[2]}\n🌫 #{@weather[4]}\n💦 #{@weather[5]}"
+    message = "Упс... У каждого свое утро :)\nА ты открывай глазки и радуйся новому дню!\n" +
+      "И пусть он не будет таким! 👎💩"
     @methods.send_message(@id, message, @token)
   end
 
