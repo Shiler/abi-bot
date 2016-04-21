@@ -1,17 +1,20 @@
+require './lib/task_manager.rb'
+require './lib/console.rb'
+
 class Bot
 
   def initialize(token)
-    @token = token
-    @synchronizer = Synchronizer.new
-    @task_manager = TaskManager.new
+    @task_manager = TaskManager.new(token)
+    @console      = Console.new
   end
 
-  def start()
+  def start
     @task_manager.start
   end
 
-  def stop()
-
+  def stop
+    @task_manager.stop
+    @console.stopped
   end
 
 end
