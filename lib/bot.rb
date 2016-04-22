@@ -5,7 +5,6 @@ class Bot
 
   def initialize(token)
     @task_manager = TaskManager.new(token)
-    @console      = Console.new
   end
 
   def start
@@ -14,7 +13,7 @@ class Bot
 
   def stop
     @task_manager.stop
-    @console.stopped
+    Console.stopped
   end
 
 end

@@ -7,7 +7,6 @@ class SendExchangeRatesTask
   def initialize(id, token, rates)
     @exec_time = MorningTime
     @executed = false
-    @methods = Methods.new
     @id = id
     @token = token
     @rates = rates
@@ -19,7 +18,7 @@ class SendExchangeRatesTask
     str3 = "🇺🇸 #{@rates[1]['name']} (#{@rates[1]['char_code']}): #{@rates[1]['rate']}\n"
     str4 = "💶 #{@rates[2]['name']} (#{@rates[2]['char_code']}): #{@rates[2]['rate']}"
     message = str1 + str2 + str3 + str4
-    @methods.send_message(@id, message, @token)
+    Methods.send_message(@id, message, @token)
   end
 
   def exec_time

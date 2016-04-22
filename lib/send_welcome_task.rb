@@ -7,15 +7,13 @@ class SendWelcomeTask
   def initialize(id, token)
     @exec_time = MorningTime
     @executed = false
-    @methods = Methods.new
     @id = id
     @token = token
   end
 
   def run
-    message = "Упс... У каждого свое утро :)\nА ты открывай глазки и радуйся новому дню!\n" +
-      "И пусть он не будет таким! 👎💩"
-    @methods.send_message(@id, message, @token)
+    message = "Ты говно... 👎💩"
+    Methods.send_message(@id, message, @token)
   end
 
   def exec_time

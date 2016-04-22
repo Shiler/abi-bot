@@ -1,4 +1,3 @@
-require './lib/weather.rb'
+require './static_test.rb'
 
-weather = Weather.new
-weather.get_weather
+StaticTest.show

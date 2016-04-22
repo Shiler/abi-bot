@@ -1,11 +1,11 @@
 require './lib/constants.rb'
+require './lib/console.rb'
+require './lib/methods.rb'
+require './lib/external_resources.rb'
+require './lib/send_welcome_task.rb'
 require './lib/send_exchange_rates_task.rb'
 require './lib/send_weather_task.rb'
-require './lib/console.rb'
-require './lib/rates.rb'
-require './lib/weather.rb'
-require './lib/methods.rb'
-require './lib/send_welcome_task.rb'
+require './lib/long_poll.rb'
 require 'date'
 
 class TaskManager
@@ -15,18 +15,13 @@ class TaskManager
     @time_tasks = Array.new
     @running    = false
     @token      = token
-    @methods    = Methods.new
-    @console    = Console.new
-    @rates      = Rates.new.get_rates
-    @weather    = Weather.new.get_weather
+    @data       = ExternalResources.get
+    @long_poll  = LongPoll.new(token)
   end
 
   def start
-    @console.tm_started
+    Console.tm_started
     @running = true
-    add_welcome_tasks
-    add_weather_tasks
-    add_currency_tasks
     while @running do
       do_task(next_task)
       check_time_tasks
@@ -34,30 +29,15 @@ class TaskManager
     end
   end
 
-  def add_currency_tasks
+  def add_default_tasks
     sleep 1/RequestsPerSecond
-    friends = @methods.get_friends(@token)
-    # friends = [95679514, 143937778] # test
+    friends = Methods.get_friends(@token)
     friends.each do |id|
-      add_time_task(SendExchangeRatesTask.new(id, @token, @rates))
-    end
-  end
-
-  def add_welcome_tasks
-    sleep 1/RequestsPerSecond
-    friends = @methods.get_friends(@token)
-    # friends = [95679514, 143937778] # test
-    friends.each do |id|
-      add_time_task(SendWelcomeTask.new(id, @token))
-    end
-  end
-
-  def add_weather_tasks
-    sleep 1/RequestsPerSecond
-    friends = @methods.get_friends(@token)
-    # friends = [95679514, 143937778] # test
-    friends.each do |id|
-      add_time_task(SendWeatherTask.new(id, @token, @weather))
+      unless WhiteList.include? id
+        add_task(SendWelcomeTask.new(id, @token))
+        add_time_task(SendWeatherTask.new(id, @token, @data[:weather]))
+        add_time_task(SendExchangeRatesTask.new(id, @token, @data[:rates]))
+      end
     end
   end
 
@@ -67,14 +47,14 @@ class TaskManager
 
   def do_task(task)
     unless task.nil?
-      @console.task_running(task.class.to_s)
+      Console.task_running(task.class.to_s)
       task.run
     end
   end
 
   def add_task(task)
     @tasks << task
-    @console.added_task(task.class.to_s)
+    Console.added_task(task.class.to_s)
   end
 
   def add_time_task(time_task)

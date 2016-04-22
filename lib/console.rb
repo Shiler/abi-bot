@@ -3,14 +3,14 @@ require 'slop'
 
 class Console
 
-  def get_parameters
+  def Console.get_parameters
     opts = Slop.parse do |o|
       o.string '...'
     end
     opts
   end
 
-  def get_token
+  def Console.get_token
     url = get_parameters.arguments[0]
     arr = url.scan(/#access_token=(.*)&expires_in=/).flatten
     if (!arr.any?)
@@ -21,25 +21,41 @@ class Console
 
   # ---- notifications block ----
 
-  def bad_url
+  def Console.bad_url
     puts 'Url is not valid! Please, check it and run script again.'.colorize(:red)
     exit
   end
 
-  def stopped
+  def Console.stopped
     puts 'Bot stopped.'.colorize(:red)
   end
 
-  def task_running(name)
+  def Console.task_running(name)
     puts "Running task: #{name}".colorize(:yellow)
   end
 
-  def tm_started
+  def Console.tm_started
     puts 'Task manager started.'.colorize(:blue)
   end
 
-  def added_task(name)
+  def Console.added_task(name)
     puts "Added task: #{name}".colorize(:green)
+  end
+
+  def Console.long_poll_started
+    puts 'Long Poll listener started.'.colorize(:blue)
+  end
+
+  def Console.external_resources_loaded
+    puts 'External resources loaded.'.colorize(:blue)
+  end
+
+  def Console.rates_loaded
+    puts 'Rates loaded.'.colorize(:blue)
+  end
+
+  def Console.weather_loaded
+    puts 'Weather loaded.'.colorize(:blue)
   end
 
 end
