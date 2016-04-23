@@ -1,5 +1,4 @@
-require 'date'
-
-RequestsPerSecond = 3
-
-MorningTime = Time.new(2016, 04, 20, 6, 0, 0, "+03:00")
+RequestsPerSecond = 5
+MORNINGTIME  = "Доброе утро от Аби⛅💭👽"
+Members = [95679514]
+#143937778

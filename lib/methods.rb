@@ -1,13 +1,11 @@
 require 'net/http'
 require 'cgi'
-require 'json'
 
 
 class Methods
 
-  def get_friends(token)
-    url = "https://api.vk.com/method/friends.get?&access_token=#{token}"
-    json_to_hash(get_by_url(url))['response'].to_a
+  def get_friend
+    # TODO
   end
 
   def send_message(id, message, token)
@@ -18,14 +16,25 @@ class Methods
   def get_by_url(url)
     url = URI.encode(url)
     uri = URI.parse(url)
+    puts uri.request_uri
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     response = http.request(Net::HTTP::Get.new(uri.request_uri))
+    #puts response.body
     response.body
   end
 
-  def json_to_hash(json)
-    JSON.parse(json)
+  def get_by_url_no_ssl(url)
+    url = URI.encode(url)
+    uri = URI.parse(url)
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = false
+    response = http.request(Net::HTTP::Get.new(uri.request_uri))
+    #puts response.body
+    response.body
   end
+
+
+
 
 end

@@ -1,63 +1,30 @@
 require './lib/constants.rb'
 require './lib/send_exchange_rates_task.rb'
-require './lib/send_weather_task.rb'
 require './lib/console.rb'
-require './lib/rates.rb'
-require './lib/weather.rb'
-require './lib/methods.rb'
-require './lib/send_welcome_task.rb'
-require 'date'
+require 'time'
+require 'colorize'
+require './lib/good_morning.rb'
+require '../lib/long_poll'
 
 class TaskManager
 
   def initialize(token)
-    @tasks      = Queue.new
+    @tasks    = Array.new
+    @running  = false
+    @token    = token
+    @console  = Console.new
     @time_tasks = Array.new
-    @running    = false
-    @token      = token
-    @methods    = Methods.new
-    @console    = Console.new
-    @rates      = Rates.new.get_rates
-    @weather    = Weather.new.get_weather
+
   end
 
   def start
     @console.tm_started
     @running = true
-    add_welcome_tasks
-    add_weather_tasks
-    add_currency_tasks
-    while @running do
+    add_tasks_to_queue
+    while (@running) do
       do_task(next_task)
-      check_time_tasks
       sleep(1/RequestsPerSecond)
-    end
-  end
-
-  def add_currency_tasks
-    sleep 1/RequestsPerSecond
-    friends = @methods.get_friends(@token)
-    # friends = [95679514, 143937778] # test
-    friends.each do |id|
-      add_time_task(SendExchangeRatesTask.new(id, @token, @rates))
-    end
-  end
-
-  def add_welcome_tasks
-    sleep 1/RequestsPerSecond
-    friends = @methods.get_friends(@token)
-    # friends = [95679514, 143937778] # test
-    friends.each do |id|
-      add_time_task(SendWelcomeTask.new(id, @token))
-    end
-  end
-
-  def add_weather_tasks
-    sleep 1/RequestsPerSecond
-    friends = @methods.get_friends(@token)
-    # friends = [95679514, 143937778] # test
-    friends.each do |id|
-      add_time_task(SendWeatherTask.new(id, @token, @weather))
+      check_time_tasks
     end
   end
 
@@ -66,46 +33,42 @@ class TaskManager
   end
 
   def do_task(task)
-    unless task.nil?
+    if (!task.nil?)
       @console.task_running(task.class.to_s)
       task.run
     end
+
   end
 
   def add_task(task)
-    @tasks << task
-    @console.added_task(task.class.to_s)
-  end
-
-  def add_time_task(time_task)
-    @time_tasks << time_task
-  end
-
-  def check_time_tasks
-    if @time_tasks.empty?
-      return nil
-    end
-    time_now = Time.now
-    @time_tasks.each do |elem|
-      if time_now.hour == elem.exec_time.hour && time_now.min == elem.exec_time.min && !elem.executed?
-        elem.set_executed(true)
-        add_task(elem)
-      end
-    end
-    check_execution
-  end
-
-  def check_execution
-    time_now = Time.now
-    @time_tasks.each do |elem|
-      if time_now.hour == elem.exec_time.hour && time_now.min > elem.exec_time.min && !elem.executed?
-        elem.set_executed(false)
-      end
-    end
+    @tasks.push(task)
   end
 
   def next_task
     @tasks.empty? ? nil : @tasks.pop
+  end
+
+  def add_tasks_to_queue
+    Members.each do |id|
+      @time_tasks.push(SendExchangeRatesTask.new(id, @token))
+    end
+    Members.each do |id|
+      @time_tasks.push(SendGoodMorningTask.new(id, @token))
+    end
+  end
+
+  def  check_time_tasks
+    @time_tasks.each do |task|
+      if  Time.now.hour == Time.parse(task.leadtime).hour && Time.now.min == Time.parse(task.leadtime).min && !task.executed
+        #check for new tasks
+        add_task(task)
+        task.executed = true
+      end
+
+      if Time.now.hour == Time.parse(task.leadtime).hour && Time.now.min > Time.parse(task.leadtime).min && task.executed
+        task.executed = false
+      end
+    end
   end
 
 end
