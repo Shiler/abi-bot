@@ -1,10 +1,10 @@
 require './lib/constants.rb'
 require './lib/send_exchange_rates_task.rb'
 require './lib/console.rb'
-require './lib/rates.rb'
 require 'time'
-require 'date'
 require 'colorize'
+require './lib/good_morning.rb'
+require '../lib/long_poll'
 
 class TaskManager
 
@@ -14,14 +14,13 @@ class TaskManager
     @token    = token
     @console  = Console.new
     @time_tasks = Array.new
-  #  @task1    = SendExchangeRatesTask.new(143937778, @token,"21:20")
-  #  @task2    = SendExchangeRatesTask.new(95679514,@token,"21:20")
+
   end
 
   def start
     @console.tm_started
     @running = true
-    adding_tasks
+    add_tasks_to_queue
     while (@running) do
       do_task(next_task)
       sleep(1/RequestsPerSecond)
@@ -49,29 +48,27 @@ class TaskManager
     @tasks.empty? ? nil : @tasks.pop
   end
 
-  def adding_tasks
-       Members.each do |id|
-          @time_tasks.push(SendExchangeRatesTask.new(id))
-        end
-      @time_tasks.each do |task|
-        puts task.executed.to_s.red
-        end
-      #sort_tasks_by_time   #add_task()
+  def add_tasks_to_queue
+    Members.each do |id|
+      @time_tasks.push(SendExchangeRatesTask.new(id, @token))
+    end
+    Members.each do |id|
+      @time_tasks.push(SendGoodMorningTask.new(id, @token))
+    end
   end
 
   def  check_time_tasks
     @time_tasks.each do |task|
-    if  Time.now.hour == Time.parse(task.leadtime).hour && Time.now.min == Time.parse(task.leadtime).min && !task.executed
-      #check for new tasks
+      if  Time.now.hour == Time.parse(task.leadtime).hour && Time.now.min == Time.parse(task.leadtime).min && !task.executed
+        #check for new tasks
         add_task(task)
         task.executed = true
-    end
+      end
 
-    if Time.now.hour == Time.parse(task.leadtime).hour && Time.now.min > Time.parse(task.leadtime).min && task.executed
-      task.executed = false
+      if Time.now.hour == Time.parse(task.leadtime).hour && Time.now.min > Time.parse(task.leadtime).min && task.executed
+        task.executed = false
+      end
     end
-
-  end
   end
 
 end
