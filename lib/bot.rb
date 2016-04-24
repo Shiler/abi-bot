@@ -3,8 +3,8 @@ require './lib/console.rb'
 
 class Bot
 
-  def initialize(token)
-    @task_manager = TaskManager.new(token)
+  def initialize
+    @task_manager = TaskManager.new
     @console      = Console.new
   end
 
