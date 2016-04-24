@@ -3,7 +3,7 @@ require './lib/constants.rb'
 require 'json'
 require 'colorize'
 require 'net/http'
-#require './lib/console.rb'
+
 
 
 class LongPoll
