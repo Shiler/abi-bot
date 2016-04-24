@@ -5,10 +5,6 @@ require 'colorize'
 require 'net/http'
 #require './lib/console.rb'
 
-#  url = 'http://imv4.vk.com\/im1797?act=a_check&key=5eda2026da3460a674c567449a20464d592282d5&ts=1769977733&wait=25&mode=2'
-#  https://api.vk.com/method/messages.getLongPollServer?access_token=e2f01c3b2abbd322761bf5f7f5259fd17a4b1f7565440a0d0db05c1b67d4204dfff801e1311ec30d46ea6&use_ssl=1&need_pts=0
-#'https://oauth.vk.com/blank.html#access_token=e2f01c3b2abbd322761bf5f7f5259fd17a4b1f7565440a0d0db05c1b67d4204dfff801e1311ec30d46ea6&expires_in=0&user_id=360169797'
-#url="https://api.vk.com/method/messages.getLongPollServer?access_token=e2f01c3b2abbd322761bf5f7f5259fd17a4b1f7565440a0d0db05c1b67d4204dfff801e1311ec30d46ea6&use_ssl=0&need_pts=0"
 
 class LongPoll
 
