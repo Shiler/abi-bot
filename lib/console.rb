@@ -1,4 +1,4 @@
- require 'colorize'
+require 'colorize'
 require 'slop'
 
 class Console

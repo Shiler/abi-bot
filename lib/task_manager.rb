@@ -4,17 +4,16 @@ require './lib/console.rb'
 require 'time'
 require 'colorize'
 require './lib/good_morning.rb'
-require '../lib/long_poll'
+require './lib/long_poll'
 
 class TaskManager
 
-  def initialize(token)
+  def initialize
     @tasks    = Array.new
     @running  = false
-    @token    = token
     @console  = Console.new
     @time_tasks = Array.new
-
+    @long_poll = LongPoll.new
   end
 
   def start
@@ -25,6 +24,7 @@ class TaskManager
       do_task(next_task)
       sleep(1/RequestsPerSecond)
       check_time_tasks
+      @long_poll.start_long_poll
     end
   end
 
@@ -49,26 +49,30 @@ class TaskManager
   end
 
   def add_tasks_to_queue
-    Members.each do |id|
-      @time_tasks.push(SendExchangeRatesTask.new(id, @token))
-    end
-    Members.each do |id|
-      @time_tasks.push(SendGoodMorningTask.new(id, @token))
-    end
+       Members.each do |id|
+          @time_tasks.push(SendExchangeRatesTask.new(id))
+          @time_tasks.push(SendGoodMorningTask.new(id))
+          #@time_tasks.push(Anytask.new(id,@token))
+      end
   end
 
   def  check_time_tasks
     @time_tasks.each do |task|
-      if  Time.now.hour == Time.parse(task.leadtime).hour && Time.now.min == Time.parse(task.leadtime).min && !task.executed
-        #check for new tasks
+    if  Time.now.hour == Time.parse(task.leadtime).hour && Time.now.min == Time.parse(task.leadtime).min && !task.executed
+      #check for new tasks
         add_task(task)
         task.executed = true
-      end
-
-      if Time.now.hour == Time.parse(task.leadtime).hour && Time.now.min > Time.parse(task.leadtime).min && task.executed
-        task.executed = false
-      end
     end
+
+    if Time.now.hour == Time.parse(task.leadtime).hour && Time.now.min > Time.parse(task.leadtime).min && task.executed
+      task.executed = false
+    end
+
+    if task.leadtime == nil && !taks.executed
+      add_task(task)
+      task.executed = true
+    end
+  end
   end
 
 end
