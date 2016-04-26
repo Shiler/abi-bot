@@ -1,6 +1,7 @@
 require './lib/methods.rb'
 require 'colorize'
 require './lib/console.rb'
+require 'colorize'
 
 class LongPoll
 
@@ -24,7 +25,13 @@ class LongPoll
 
   def do_iteration
     url = "http://#{@server}?act=a_check&key=#{@key}&ts=#{@ts}&wait=25&mode=2"
-    Methods.get_by_url(url)
+    Methods.get_by_url_no_ssl(url)
+  end
+
+  def get_updates
+    response = Methods.json_to_hash(do_iteration)
+    @ts = response['ts']
+    response['updates']
   end
 
 end

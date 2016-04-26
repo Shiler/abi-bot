@@ -6,10 +6,18 @@ require './lib/send_welcome_task.rb'
 require './lib/send_exchange_rates_task.rb'
 require './lib/send_weather_task.rb'
 require './lib/long_poll.rb'
+require './lib/lp_updates_manager.rb'
+require './lib/command_processor.rb'
+require './lib/send_new_features_task.rb'
 require 'date'
+require 'colorize'
+require 'monitor'
 
 class TaskManager
 
+  POOL_SIZE = 10
+
+  attr_accessor :data
   def initialize(token)
     @tasks      = Queue.new
     @time_tasks = Array.new
@@ -17,15 +25,66 @@ class TaskManager
     @token      = token
     @data       = ExternalResources.get
     @long_poll  = LongPoll.new(token)
+    @lp_manager = LPUpdatesManager.new
+    @cp         = CommandProcessor.new(token)
+    @messages   = Queue.new
+    @commands   = Queue.new
+    @jobs       = Queue.new
+    @mutex      = Mutex.new
   end
 
   def start
-    Console.tm_started
     @running = true
+    # send_new_features_notification
+    long_poll_thread
     while @running do
+      process_messages
+      commands_to_tasks
       do_task(next_task)
       check_time_tasks
       sleep(1/RequestsPerSecond)
+
+      if Thread.list.count == 1 || Thread.list.last == nil
+        long_poll_thread
+      end
+    end
+  end
+
+
+
+  def send_new_features_notification
+    sleep 1/RequestsPerSecond
+    friends = Methods.get_friends(@token)
+    friends.each do |id|
+      unless WhiteList.include? id
+        add_task(SendNewFeaturesTask.new(id, @token))
+      end
+    end
+  end
+
+  def long_poll_thread
+    Thread.new do
+      @mutex.synchronize do
+        LPUpdatesManager.get_messages(@long_poll.get_updates).each do |message|
+          @messages << message
+        end
+      end
+    end
+  end
+
+  def commands_to_tasks
+    until @commands.empty? do
+      add_task(@cp.make_task(@commands.pop))
+    end
+  end
+
+  def process_messages
+    until @messages.empty?
+      message = @messages.pop
+      if @cp.is_command?(message)
+        @commands << @cp.process(message)
+        puts @cp.process(message).to_s
+      end
     end
   end
 

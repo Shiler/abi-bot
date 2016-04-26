@@ -46,16 +46,20 @@ class Console
     puts 'Long Poll listener started.'.colorize(:blue)
   end
 
-  def Console.external_resources_loaded
-    puts 'External resources loaded.'.colorize(:blue)
-  end
-
   def Console.rates_loaded
     puts 'Rates loaded.'.colorize(:blue)
   end
 
   def Console.weather_loaded
     puts 'Weather loaded.'.colorize(:blue)
+  end
+
+  def Console.available_commands(commands)
+    str = ''
+    commands.each do |item|
+      str += "/#{item}\s"
+    end
+    puts "Available commands: #{str}".colorize(:blue)
   end
 
 end

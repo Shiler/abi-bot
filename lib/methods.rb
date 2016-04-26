@@ -11,7 +11,8 @@ class Methods
   end
 
   def Methods.send_message(id, message, token)
-    url = "https://api.vk.com/method/messages.send?user_id=#{id}&message=#{message}&access_token=#{token}"
+    random_id = rand(10000000)
+    url = "https://api.vk.com/method/messages.send?user_id=#{id}&message=#{message}&random_id=#{random_id}&v=5.50&access_token=#{token}"
     get_by_url(url)
   end
 
@@ -20,6 +21,15 @@ class Methods
     uri = URI.parse(url)
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
+    response = http.request(Net::HTTP::Get.new(uri.request_uri))
+    response.body
+  end
+
+  def Methods.get_by_url_no_ssl(url)
+    url = URI.encode(url)
+    uri = URI.parse(url)
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = false
     response = http.request(Net::HTTP::Get.new(uri.request_uri))
     response.body
   end
