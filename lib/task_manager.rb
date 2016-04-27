@@ -15,8 +15,6 @@ require 'monitor'
 
 class TaskManager
 
-  POOL_SIZE = 10
-
   attr_accessor :data
   def initialize(token)
     @tasks      = Queue.new

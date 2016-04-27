@@ -18,6 +18,7 @@ class LongPoll
   def init_server
     url =  "https://api.vk.com/method/messages.getLongPollServer?use_ssl=0&need_pts=0&access_token=#{@token}"
     response = Methods.json_to_hash(Methods.get_by_url(url))['response']
+    puts "response: #{response}"
     @key = response['key']
     @server = response['server']
     @ts = response['ts']
