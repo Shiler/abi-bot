@@ -15,8 +15,6 @@ require 'monitor'
 
 class TaskManager
 
-  POOL_SIZE = 10
-
   attr_accessor :data
   def initialize(token)
     @tasks      = Queue.new
@@ -50,7 +48,11 @@ class TaskManager
     end
   end
 
+  def tm_iteration
+    Thread.new do
 
+    end
+  end
 
   def send_new_features_notification
     sleep 1/RequestsPerSecond

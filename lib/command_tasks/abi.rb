@@ -8,10 +8,10 @@ class Abi
     @token = token
     existing = Dir['lib/command_tasks/*.rb'].map! { |elem|
       elem.to_s.gsub('.rb', '').gsub('lib/command_tasks/', '').downcase
-    }
+    }.sort
     @existing_str = ''
     existing.each do |item|
-      @existing_str += "- /#{item}\n"
+      @existing_str += "✔ /#{item}\n"
     end
   end
 

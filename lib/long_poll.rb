@@ -1,7 +1,6 @@
 require './lib/methods.rb'
 require 'colorize'
 require './lib/console.rb'
-require 'colorize'
 
 class LongPoll
 
