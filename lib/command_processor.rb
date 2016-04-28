@@ -5,6 +5,8 @@ require './lib/command_tasks/weather.rb'
 require './lib/command_tasks/rates.rb'
 require './lib/command_tasks/mood.rb'
 require './lib/command_tasks/abi.rb'
+require './lib/command_tasks/advice.rb'
+require './lib/command_tasks/coin.rb'
 
 class CommandProcessor
 
@@ -20,7 +22,7 @@ class CommandProcessor
   def process(message)
     if is_command?(message)
       command = message.text[/\/(\S*)\s/, 1].downcase
-      argument = message.text[/\s(.*)$/, 1].downcase
+      argument = message.text[/\s(.*)$/, 1].chomp(' ')
       { :command => command, :argument => argument, :from_id => message.from_id }
     end
   end
@@ -41,6 +43,10 @@ class CommandProcessor
         return Mood.new(command[:from_id], @token)
       when 'abi'
         return Abi.new(command[:from_id], command[:argument], @token)
+      when 'advice'
+        return Advice.new(command[:from_id], command[:argument], @token)
+      when 'coin'
+        return Coin.new(command[:from_id], @token)
       else
         return Abi.new(command[:from_id], 'list', @token)
     end

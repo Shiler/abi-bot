@@ -1,7 +1,6 @@
 require './lib/methods.rb'
 require 'colorize'
 require './lib/console.rb'
-require 'colorize'
 
 class LongPoll
 
@@ -17,7 +16,6 @@ class LongPoll
 
   def init_server
     url =  "https://api.vk.com/method/messages.getLongPollServer?use_ssl=0&need_pts=0&access_token=#{@token}"
-    puts "response: #{Methods.get_by_url(url).to_s}"
     response = Methods.json_to_hash(Methods.get_by_url(url))['response']
     @key = response['key']
     @server = response['server']

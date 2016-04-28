@@ -11,7 +11,7 @@ class Oxxxy
     text_array = IO.readlines('./lib/command_tasks/oxxxy.txt').map! { |elem|
       elem.gsub('\n', '<br>')
     }
-    message = "Заказывали цитату Окси? Получайте 😏\n\n" + text_array[rand(text_array.size)]
+    message = "Oxxxy вещает: \n\n#{text_array[rand(text_array.size)]}😏"
     Methods.send_message(@id, message, @token)
   end
 

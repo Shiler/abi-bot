@@ -48,7 +48,11 @@ class TaskManager
     end
   end
 
+  def tm_iteration
+    Thread.new do
 
+    end
+  end
 
   def send_new_features_notification
     sleep 1/RequestsPerSecond
