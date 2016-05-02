@@ -10,9 +10,20 @@ class Methods
     json_to_hash(get_by_url(url))['response'].to_a
   end
 
+  def Methods.get_chat_users(chat_id, token)
+    url = "https://api.vk.com/method/messages.getChatUsers?&chat_id=#{chat_id}&fields=screen_name&access_token=#{token}"
+    json_to_hash(get_by_url(url))['response']
+  end
+
   def Methods.send_message(id, message, token)
     random_id = rand(10000000)
-    url = "https://api.vk.com/method/messages.send?user_id=#{id}&message=#{message}&random_id=#{random_id}&v=5.50&access_token=#{token}"
+    url = "https://api.vk.com/method/messages.send?peer_id=#{id}&message=#{message}&random_id=#{random_id}&v=5.50&access_token=#{token}"
+    get_by_url(url)
+  end
+
+  def Methods.send_message_with_forward(id, message, forward_messages, token)
+    random_id = rand(10000000)
+    url = "https://api.vk.com/method/messages.send?peer_id=#{id}&message=#{message}&random_id=#{random_id}&forward_messages=#{forward_messages}&v=5.50&access_token=#{token}"
     get_by_url(url)
   end
 

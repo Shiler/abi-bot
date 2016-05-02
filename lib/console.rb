@@ -1,4 +1,5 @@
 require 'colorize'
+require './lib/constants.rb'
 require 'slop'
 
 class Console
@@ -11,12 +12,13 @@ class Console
   end
 
   def Console.get_token
-    url = get_parameters.arguments[0]
-    arr = url.scan(/#access_token=(.*)&expires_in=/).flatten
-    if (!arr.any?)
-      bad_url
-    end
-    arr.first
+    #url = get_parameters.arguments[0]
+    #arr = url.scan(/#access_token=(.*)&expires_in=/).flatten
+    #if (!arr.any?)
+    #  bad_url
+    #end
+    #arr.first
+    TOKEN
   end
 
   # ---- notifications block ----
@@ -60,6 +62,10 @@ class Console
       str += "/#{item}\s"
     end
     puts "Available commands: #{str}".colorize(:blue)
+  end
+
+  def Console.calls(count)
+    puts "Calls: #{count}".colorize(:blue)
   end
 
 end

@@ -3,10 +3,6 @@ require './lib/message.rb'
 
 class LPUpdatesManager
 
-  def initialize
-
-  end
-
   def LPUpdatesManager.get_messages(updates)
     new_messages = []
     updates.each do |update|

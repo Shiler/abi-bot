@@ -9,6 +9,7 @@ require './lib/long_poll.rb'
 require './lib/lp_updates_manager.rb'
 require './lib/command_processor.rb'
 require './lib/send_new_features_task.rb'
+require './lib/group_chat_processor.rb'
 require 'date'
 require 'colorize'
 require 'monitor'
@@ -25,10 +26,13 @@ class TaskManager
     @long_poll  = LongPoll.new(token)
     @lp_manager = LPUpdatesManager.new
     @cp         = CommandProcessor.new(token)
+    @gcp        = GroupChatProcessor.new(token)
     @messages   = Queue.new
+    @who_messages = Queue.new
     @commands   = Queue.new
     @jobs       = Queue.new
     @mutex      = Mutex.new
+    @com_calls  = 0
   end
 
   def start
@@ -38,6 +42,7 @@ class TaskManager
     while @running do
       process_messages
       commands_to_tasks
+      who_questions_to_tasks
       do_task(next_task)
       check_time_tasks
       sleep(1/RequestsPerSecond)
@@ -45,12 +50,6 @@ class TaskManager
       if Thread.list.count == 1 || Thread.list.last == nil
         long_poll_thread
       end
-    end
-  end
-
-  def tm_iteration
-    Thread.new do
-
     end
   end
 
@@ -75,8 +74,22 @@ class TaskManager
   end
 
   def commands_to_tasks
-    until @commands.empty? do
-      add_task(@cp.make_task(@commands.pop))
+    until @commands.empty?
+      command = @commands.pop
+      unless command.nil?
+        Console.calls(@com_calls += 1)
+        add_task(@cp.make_task(command))
+      end
+    end
+  end
+
+  def who_questions_to_tasks
+    until @who_messages.empty?
+      who_message = @who_messages.pop
+      unless who_message.nil?
+        Console.calls(@com_calls += 1)
+        add_task(@gcp.make_task(who_message))
+      end
     end
   end
 
@@ -86,6 +99,10 @@ class TaskManager
       if @cp.is_command?(message)
         @commands << @cp.process(message)
         puts @cp.process(message).to_s
+      end
+      if @gcp.is_who_question?(message)
+        @who_messages << @gcp.process(message)
+        puts @gcp.process(message).to_s
       end
     end
   end
