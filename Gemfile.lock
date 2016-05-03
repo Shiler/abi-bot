@@ -15,10 +15,7 @@ DEPENDENCIES
   colorize
   nokogiri
   slop
-<<<<<<< HEAD
   unicode
-=======
 
 BUNDLED WITH
    1.11.2
->>>>>>> fd8829b33090bad950431892c95a5bdeb3f29a9c
