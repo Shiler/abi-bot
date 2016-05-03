@@ -8,10 +8,11 @@ class Mood
   end
 
   def run
+    r = Random.new
     text_array = IO.readlines('./lib/command_tasks/mood.txt').map! { |elem|
       elem.gsub('\n', '<br>')
     }
-    message = text_array[rand(text_array.size)]
+    message = text_array[r.rand(text_array.size)]
     Methods.send_message(@id, message, @token)
   end
 
