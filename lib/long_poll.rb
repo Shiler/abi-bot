@@ -24,13 +24,21 @@ class LongPoll
 
   def do_iteration
     url = "http://#{@server}?act=a_check&key=#{@key}&ts=#{@ts}&wait=25&mode=2"
-    Methods.get_by_url_no_ssl(url)
+    response = Methods.get_by_url_no_ssl(url)
+    response = Methods.json_to_hash(response)
+    if response.has_key?('failed')
+      Console.lp_output(response.to_s)
+      init_server
+      do_iteration
+    else
+      response
+    end
   end
 
   def get_updates
-    response = Methods.json_to_hash(do_iteration)
-    @ts = response['ts']
-    response['updates']
+    hash = do_iteration
+    @ts = hash['ts']
+    hash['updates']
   end
 
 end

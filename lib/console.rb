@@ -68,4 +68,8 @@ class Console
     puts "Calls: #{count}".colorize(:blue)
   end
 
+  def Console.lp_output(str)
+    puts ("=========LPO=========\n" + str + "\n" + '=========END=========').colorize(:red)
+  end
+
 end
