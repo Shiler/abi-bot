@@ -1,5 +1,4 @@
 require './lib/console.rb'
-require './lib/unknown_command_task.rb'
 require './lib/command_tasks/oxxxy.rb'
 require './lib/command_tasks/weather.rb'
 require './lib/command_tasks/rates.rb'

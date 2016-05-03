@@ -37,7 +37,6 @@ class TaskManager
 
   def start
     @running = true
-    send_new_features_notification
     long_poll_thread
     while @running do
       process_messages
