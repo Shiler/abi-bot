@@ -13,8 +13,9 @@ class Coin
   end
 
   def answer
+    r = Random.new
     answers = %w(Орел! Решка!)
-    answers[rand(2)]
+    answers[r.rand(2)]
   end
 
 end

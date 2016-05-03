@@ -49,7 +49,8 @@ class Advice
   end
 
   def answer
-    ANSWERS[rand(4)][rand(5)]
+    r = Random.new
+    ANSWERS[r.rand(4)][r.rand(5)]
   end
 
 end
