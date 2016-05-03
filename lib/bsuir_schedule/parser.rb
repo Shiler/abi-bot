@@ -6,14 +6,14 @@ class Parser
   def Parser.get_groups
     gr = Hash.new
     url = 'http://www.bsuir.by/schedule/rest/studentGroup'
-    @doc = Nokogiri::XML(open(url))
-    groups = @doc.xpath('//studentGroup').to_a
+    doc = Nokogiri::XML(open(url))
+    groups = doc.xpath('//studentGroup').to_a
     groups.each_index do |index|
-      key = @doc.xpath("//studentGroup[#{index}]//name").text
+      key = doc.xpath("//studentGroup[#{index}]//name").text
       if key != '' and !key.nil?
         value = {
-            :id => @doc.xpath("//studentGroup[#{index}]//id").text,
-            :course =>@doc.xpath("//studentGroup[#{index}]//course").text
+            :id => doc.xpath("//studentGroup[#{index}]//id").text,
+            :course =>doc.xpath("//studentGroup[#{index}]//course").text
         }
         gr[key] = value
       end
@@ -34,9 +34,14 @@ class Parser
 
   def Parser.get_schedule(group)
     id = get_groups[group.to_s][:id]
-    puts id
+    url = "http://www.bsuir.by/schedule/rest/schedule/#{id}"
+    doc = Nokogiri::XML(open(url))
+    subjects = doc.xpath('//schedule').to_a
+    subjects.each_index do |index|
+      puts index
+    end
   end
 
 end
 
-hash = Parser.groups_from_file
+Parser.get_schedule(413801)

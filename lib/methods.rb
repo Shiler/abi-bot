@@ -1,6 +1,7 @@
 require 'net/http'
 require 'cgi'
 require 'json'
+require './lib/constants.rb'
 
 
 class Methods
@@ -18,7 +19,13 @@ class Methods
   def Methods.send_message(id, message, token)
     random_id = rand(10000000)
     url = "https://api.vk.com/method/messages.send?peer_id=#{id}&message=#{message}&random_id=#{random_id}&v=5.50&access_token=#{token}"
-    get_by_url(url)
+    response = json_to_hash(get_by_url(url))
+    if response.has_key?('error') and response['error']['error_code'] == 14
+      sleep 1/RequestsPerSecond
+      msg = '⚠ Too many requests! Flood protection.'
+      send_message(id, msg, token)
+    end
+    response
   end
 
   def Methods.send_message_with_forward(id, message, forward_messages, token)
