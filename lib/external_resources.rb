@@ -1,5 +1,5 @@
-require './lib/rates.rb'
-require './lib/weather.rb'
+require_relative 'rates.rb'
+require_relative 'weather.rb'
 
 class ExternalResources
 

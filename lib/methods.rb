@@ -1,7 +1,7 @@
 require 'net/http'
 require 'cgi'
 require 'json'
-require './lib/constants.rb'
+require_relative 'constants.rb'
 
 
 class Methods

@@ -1,5 +1,5 @@
-require './lib/console.rb'
-require './lib/who_question_task.rb'
+require_relative 'console.rb'
+require_relative 'command_tasks/who_question_task.rb'
 require 'unicode'
 
 class GroupChatProcessor

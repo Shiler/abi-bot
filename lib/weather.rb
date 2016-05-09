@@ -1,5 +1,5 @@
 require 'rss'
-require './lib/console.rb'
+require_relative 'console.rb'
 
 class Weather
 

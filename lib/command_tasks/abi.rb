@@ -17,7 +17,7 @@ class Abi
 
   def run
     case @argument.chomp
-      when 'commands', 'list', '' then
+      when 'commands', 'list', '', nil then
         available_commands
       else
         available_commands
@@ -25,7 +25,9 @@ class Abi
   end
 
   def available_commands
-    message = "Список доступных команд: \n" + @existing_str
+    message = IO.readlines('./lib/command_tasks/commands.txt').join { |str, elem|
+      elem + "\n"
+    }
     Methods.send_message(@id, message, @token)
   end
 

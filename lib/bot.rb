@@ -1,5 +1,5 @@
-require './lib/task_manager.rb'
-require './lib/console.rb'
+require_relative 'task_manager.rb'
+require_relative 'console.rb'
 
 class Bot
 

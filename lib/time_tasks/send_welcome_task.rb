@@ -1,12 +1,12 @@
 require './lib/methods.rb'
 require './lib/constants.rb'
+require_relative 'basic_time_task.rb'
 require 'date'
 
-class SendWelcomeTask
+class SendWelcomeTask < BasicTimeTask
 
   def initialize(id, token)
-    @exec_time = MorningTime
-    @executed = false
+    super
     @id = id
     @token = token
   end
@@ -14,18 +14,6 @@ class SendWelcomeTask
   def run
     message = "Ты говно... 👎💩"
     Methods.send_message(@id, message, @token)
-  end
-
-  def exec_time
-    @exec_time
-  end
-
-  def set_executed(bool)
-    @executed = bool
-  end
-
-  def executed?
-    @executed
   end
 
 end
