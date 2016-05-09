@@ -1,6 +1,6 @@
 require 'nokogiri'
 require 'open-uri'
-require './lib/console.rb'
+require_relative 'console.rb'
 
 class Rates
 

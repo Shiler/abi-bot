@@ -1,5 +1,5 @@
 require 'colorize'
-require './lib/constants.rb'
+require_relative 'constants.rb'
 require 'slop'
 
 class Console

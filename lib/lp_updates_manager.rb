@@ -1,4 +1,4 @@
-require './lib/message.rb'
+require_relative 'message.rb'
 
 
 class LPUpdatesManager

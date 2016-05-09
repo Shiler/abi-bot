@@ -1,28 +1,22 @@
-require './lib/console.rb'
-require './lib/command_tasks/oxxxy.rb'
-require './lib/command_tasks/weather.rb'
-require './lib/command_tasks/rates.rb'
-require './lib/command_tasks/mood.rb'
-require './lib/command_tasks/abi.rb'
-require './lib/command_tasks/advice.rb'
-require './lib/command_tasks/coin.rb'
+require_relative 'console.rb'
+require_relative 'command_tasks/oxxxy.rb'
+require_relative 'command_tasks/weather.rb'
+require_relative 'command_tasks/rates.rb'
+require_relative 'command_tasks/abi.rb'
+require_relative 'command_tasks/advice.rb'
+require_relative 'command_tasks/coin.rb'
 
 class CommandProcessor
 
   def initialize(token)
     @token =  token
-    @commands = Queue.new
-    @existing = Dir['lib/command_tasks/*.rb'].map! { |elem|
-      elem.to_s.gsub('.rb', '').gsub('lib/command_tasks/', '').downcase
-    }
-    Console.available_commands(@existing)
   end
 
   def process(message)
     if is_command?(message)
       command = message.text[/\/(\S*)\s/, 1].downcase
       argument = message.text[/\s(.*)$/, 1].chomp(' ')
-      { :command => command, :argument => argument, :from_id => message.from_id }
+      { :type => command, :argument => argument, :from_id => message.from_id }
     end
   end
 
@@ -31,15 +25,13 @@ class CommandProcessor
   end
 
   def make_task(command)
-    case command[:command]
+    case command[:type]
       when 'oxxxy'
         return Oxxxy.new(command[:from_id], @token)
       when 'weather'
         return Weather.new(command[:from_id], @token)
       when 'rates'
         return Rates.new(command[:from_id], @token)
-      when 'mood'
-        return Mood.new(command[:from_id], @token)
       when 'abi'
         return Abi.new(command[:from_id], command[:argument], @token)
       when 'advice'
