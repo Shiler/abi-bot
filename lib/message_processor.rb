@@ -6,6 +6,7 @@ require_relative 'command_tasks/rates.rb'
 require_relative 'command_tasks/abi.rb'
 require_relative 'command_tasks/advice.rb'
 require_relative 'command_tasks/coin.rb'
+require_relative 'command_tasks/civil_civil_task.rb'
 require 'unicode'
 
 class MessageProcessor
@@ -19,6 +20,9 @@ class MessageProcessor
       question = message.text[/[КкKk][ТтTt][ОоOo]\s(.*)$/, 1].chomp(' ')
       return { :type => 'who_question', :argument => question, :forward_messages => message.message_id,
         :from_id => message.from_id }
+    elsif is_civil_message?(message)
+      return { :type => 'civil_message', :argument => question, :forward_messages => message.message_id,
+      :from_id => message.from_id }
     elsif is_regular_message?(message)
       return { :type => 'message' }
     elsif is_unknown_command?(message)
@@ -32,6 +36,11 @@ class MessageProcessor
 
   def is_regular_message?(message)
     message.text[0] != '/' ? true : false
+  end
+
+  def is_civil_message?(message)
+    message.text == 'Цивил, цивил ' ? (return false) : nil
+    Unicode.downcase(message.text[message.text.size-3, message.text.size-1]) == 'ил ' ? true : false
   end
 
   def is_unknown_command?(message)
@@ -65,6 +74,8 @@ class MessageProcessor
         return Advice.new(data[:from_id], data[:argument], @token)
       when 'coin'
         return Coin.new(data[:from_id], @token)
+      when 'civil_message'
+        return CivilCivilTask.new(data, @token)
       when 'unknown'
         return Abi.new(data[:from_id], 'list', @token)
       else
