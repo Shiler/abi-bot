@@ -6,6 +6,7 @@ require_relative 'command_tasks/rates.rb'
 require_relative 'command_tasks/abi.rb'
 require_relative 'command_tasks/advice.rb'
 require_relative 'command_tasks/coin.rb'
+require_relative 'command_tasks/slogan.rb'
 require_relative 'command_tasks/civil_civil_task.rb'
 require 'unicode'
 
@@ -76,6 +77,8 @@ class MessageProcessor
         return Coin.new(data[:from_id], @token)
       when 'civil_message'
         return CivilCivilTask.new(data, @token)
+      when 'slogan'
+        return Slogan.new(data, @token)
       when 'unknown'
         return Abi.new(data[:from_id], 'list', @token)
       else
