@@ -1,56 +1,44 @@
-require './lib/methods.rb'
-require './lib/constants.rb'
-require 'json'
+require_relative 'methods.rb'
 require 'colorize'
-require 'net/http'
-#require './lib/console.rb'
-
-#  url = 'http://imv4.vk.com\/im1797?act=a_check&key=5eda2026da3460a674c567449a20464d592282d5&ts=1769977733&wait=25&mode=2'
-#  https://api.vk.com/method/messages.getLongPollServer?access_token=e2f01c3b2abbd322761bf5f7f5259fd17a4b1f7565440a0d0db05c1b67d4204dfff801e1311ec30d46ea6&use_ssl=1&need_pts=0
-#'https://oauth.vk.com/blank.html#access_token=e2f01c3b2abbd322761bf5f7f5259fd17a4b1f7565440a0d0db05c1b67d4204dfff801e1311ec30d46ea6&expires_in=0&user_id=360169797'
-#url="https://api.vk.com/method/messages.getLongPollServer?access_token=e2f01c3b2abbd322761bf5f7f5259fd17a4b1f7565440a0d0db05c1b67d4204dfff801e1311ec30d46ea6&use_ssl=0&need_pts=0"
+require_relative 'console.rb'
 
 class LongPoll
 
-  attr_accessor :server, :key, :ts, :response_hash, :long_poll_request, :from_id, :message_text
-
-
-def initialize
-  @url = "https://api.vk.com/method/messages.getLongPollServer?access_token=#{TOKEN}&use_ssl=0&need_pts=0"
-  @methods = Methods.new
-end
-
-
-def get_params_for_lp(response)
-hash = JSON.parse(response)
-@key =  hash["response"]["key"]
-@server = hash["response"]["server"]
-@ts = hash["response"]["ts"]
-@long_poll_request = "http://#{@server}?act=a_check&key=#{@key}&ts=#{@ts}&wait=25&mode=2"
-end
-
-
-
-def start_long_poll
-get_params_for_lp(@methods.get_by_url(@url)) if @ts == nil
-@response_hash =  JSON.parse(@methods.get_by_url_no_ssl(@long_poll_request))
-@message_text = @response_hash["updates"].flatten[6].to_s
-@from_id = @response_hash["updates"].flatten[3].to_s
-puts "#{@message_text} #{@from_id}".green if message_text != ""
-
-
-  if @response_hash["updates"] == []
-    puts "No changes...".blue
-    @methods.get_by_url_no_ssl(@long_poll_request)
+  def initialize(token)
+    @token  = token
+    @key    = nil
+    @server = nil
+    @ts     = nil
+    init_server
+    Console.long_poll_started
+    puts "key:\t#{@key}\nserver:\t#{@server}\nts:\t#{@ts}".red
   end
 
-  if @response_hash["updates"] != []
-    @ts = @response_hash["ts"]
-    @long_poll_request = "http://#{@server}?act=a_check&key=#{@key}&ts=#{@ts}&wait=25&mode=2"
-    @methods.get_by_url_no_ssl(@long_poll_request)
+  def init_server
+    url =  "https://api.vk.com/method/messages.getLongPollServer?use_ssl=0&need_pts=0&access_token=#{@token}"
+    response = Methods.json_to_hash(Methods.get_by_url(url))['response']
+    @key = response['key']
+    @server = response['server']
+    @ts = response['ts']
   end
 
-end
+  def do_iteration
+    url = "http://#{@server}?act=a_check&key=#{@key}&ts=#{@ts}&wait=25&mode=2"
+    response = Methods.get_by_url_no_ssl(url)
+    response = Methods.json_to_hash(response)
+    if response.has_key?('failed')
+      Console.lp_output(response.to_s)
+      init_server
+      do_iteration
+    else
+      response
+    end
+  end
 
+  def get_updates
+    hash = do_iteration
+    @ts = hash['ts']
+    hash['updates']
+  end
 
 end

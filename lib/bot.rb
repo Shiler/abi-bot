@@ -1,11 +1,10 @@
-require './lib/task_manager.rb'
-require './lib/console.rb'
+require_relative 'task_manager.rb'
+require_relative 'console.rb'
 
 class Bot
 
-  def initialize
-    @task_manager = TaskManager.new
-    @console      = Console.new
+  def initialize(token)
+    @task_manager = TaskManager.new(token)
   end
 
   def start
@@ -14,7 +13,7 @@ class Bot
 
   def stop
     @task_manager.stop
-    @console.stopped
+    Console.stopped
   end
 
 end
