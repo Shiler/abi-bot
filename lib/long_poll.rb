@@ -1,6 +1,10 @@
 require_relative 'methods.rb'
 require 'colorize'
+
 require_relative 'console.rb'
+
+require 'net/http'
+
 
 class LongPoll
 
