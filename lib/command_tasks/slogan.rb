@@ -11,6 +11,7 @@ class Slogan
   end
 
   def get_slogan
+    @question = @question.gsub("/slogan", '').strip
     if @question == '' || @question.nil?
       'Вы не ввели слово для слогана!'
     else

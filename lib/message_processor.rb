@@ -32,7 +32,7 @@ class MessageProcessor
       command = message.text[/\/(\S*)\s/, 1].downcase
       argument = message.text[/\s(.*)$/, 1].chomp(' ')
       return { :type => command, :argument => argument, :from_id => message.from_id }
-    
+
     end
   end
 
@@ -42,7 +42,12 @@ class MessageProcessor
 
   def is_civil_message?(message)
     message.text == 'Цивил, цивил ' ? (return false) : nil
-    Unicode.downcase(message.text[message.text.size-3, message.text.size-1]) == 'ил ' ? true : false 
+    il = message.text[message.text.size-3, message.text.size-1]
+    if !il.eql?(nil)
+      Unicode.downcase(il) == 'ил ' ? true : false
+    else false
+    end
+    #Unicode.downcase(message.text[message.text.size-3, message.text.size-1]) == 'ил ' ? true : false
   end
 
   def is_unknown_command?(message)
@@ -76,10 +81,10 @@ class MessageProcessor
         return Advice.new(data[:from_id], data[:argument], @token)
       when 'coin'
         return Coin.new(data[:from_id], @token)
-      when 'civil_message'
-        return CivilCivilTask.new(data, @token)
       when 'slogan'
         return Slogan.new(data, @token)
+      when 'civil_message'
+        return CivilCivilTask.new(data, @token)
       when 'unknown'
         return Abi.new(data[:from_id], 'list', @token)
       else
