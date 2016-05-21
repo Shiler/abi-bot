@@ -40,7 +40,9 @@ class MessageProcessor
   end
 
   def is_civil_message?(message)
-    message.text == 'Цивил, цивил ' ? (return false) : nil
+    if message.text == 'Цивил, цивил ' || message.text.size < 3
+      return false
+    end
     Unicode.downcase(message.text[message.text.size-3, message.text.size-1]) == 'ил ' ? true : false
   end
 
