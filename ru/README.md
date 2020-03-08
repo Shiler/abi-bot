@@ -4,22 +4,22 @@
 
 ## Getting startedaaaa
 
-bot starts by running shell command ./abi-bot 'URL'
+бот запускается командой shell ./abi-bot 'URL'
 
 ```sh
 ./abi-bot 'URL'
 d
 ```
 
-### How to get URL?
+### Как получить URL?
 
-1. Open the following link in browser
+1. Откройте следующую ссылку в браузере
 
 ```
 https://oauth.vk.com/authorize?client_id=5413868&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=messages,friends,audio,status,groups,offline&response_type=token&v=5.50
 ```
 
-1. Allow to use your account (not personal! only fake for bot)
-2. Copy final url from address bar
+1. Разрешить использовать свой аккаунт (не личный! Только фейк для бота)
+2. Скопировать окончательный URL из адресной строки
 
-> ** Notice: ** Be careful and don't share your access token. It has no expiration date!
+> ** Обратите внимание: ** Будьте осторожны и не передавайте свой токен доступа. У него нет срока годности!
